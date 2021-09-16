@@ -1,56 +1,39 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-name: NodeJS CI
-on: ["push"]
+name: test
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+
     strategy:
       matrix:
         node-version: [12.x, 14.x]
-    container:
-      image: node:10.18-jessie
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          DB_DATABASE: patronize
-          DB_USER: root
-          DB_PASSWORD: 'root'
-          DB_HOST: localhost
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 3306:3306
-          
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
+    - name: Shutdown Ubuntu MySQL (SUDO)
+      run: sudo service mysql stop
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm run build --if-present
-    - name: Connect to Mysql
-
-      run: node src/models/index
-      env:
-        DB_PORT: 5432
-        DB_HOST: localhost
-
-    - run: npm run coverage
-      env:
-        NODE_ENV: test
-        JWT_KEY: ${{ secrets.JWT_KEY }}
-        COOKIE_KEY: ${{ secrets.COOKIE_KEY }}
-        PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+    - name: Set up MySQL 5.7
+      uses: mirromutth/mysql-action@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        mysql version: 5.7
+        mysql database: test
+        mysql root password: ${{ secrets.DatabasePassword }}
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm run lint
+        npm test -- --password=${{ secrets.DatabasePassword }}
+      env:
+        CI: true
