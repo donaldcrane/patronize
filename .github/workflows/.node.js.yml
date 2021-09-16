@@ -34,7 +34,7 @@ jobs:
       run: |
         npm install
         npm run lint
-        npm run coverage
+        
       env:
         CI: true
         # NODE_ENV: test
@@ -45,4 +45,4 @@ jobs:
     #   env:
     #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
     #     with:
-    #       github-token: ${{ secrets.GITHUB_TOKEN }}
+    #       github-token: ${{ secrets.GITHUB_TOKEN }} # npm run coverage
