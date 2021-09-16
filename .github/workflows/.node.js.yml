@@ -15,9 +15,10 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_USER: mysql
-          MYSQL_PASSWORD: mysql
-          MYSQL_DB: mysql
+          DB_DATABASE: patronize
+          DB_USER: root
+          DB_PASSWORD: 'root'
+          DB_HOST: localhost
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -38,8 +39,8 @@ jobs:
 
       run: node src/models/index
       env:
-        MYSQL_HOST: mysql
-        MYSQL_PORT: 3306
+        DB_PORT: 5432
+        DB_HOST: localhost
 
     - run: npm run coverage
       env:
