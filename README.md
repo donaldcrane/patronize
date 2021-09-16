@@ -1,6 +1,6 @@
-[![Coverage Status]()
+[![Coverage Status](https://coveralls.io/repos/github/donaldcrane/patronize/badge.svg?branch=main)](https://coveralls.io/github/donaldcrane/patronize?branch=main)
 
-[![NodeJS CI]()
+[![NodeJS CI](https://github.com/donaldcrane/patronize/actions/workflows/.node.js.yml/badge.svg)](https://github.com/donaldcrane/patronize/actions/workflows/.node.js.yml)
 
 # Patronize
 

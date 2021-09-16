@@ -13,7 +13,7 @@ jobs:
       image: node:10.18-jessie
     services:
       mysql:
-        image: mysql
+        image: mysql:5.7
         env:
           MYSQL_USER: mysql
           MYSQL_PASSWORD: mysql
@@ -24,7 +24,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 3036:3036
+          - 3306:3306
           
     steps:
     - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
       run: node src/models/index
       env:
         MYSQL_HOST: mysql
-        MYSQL_PORT: 3036
+        MYSQL_PORT: 3306
 
     - run: npm run coverage
       env:
