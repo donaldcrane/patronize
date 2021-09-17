@@ -1,6 +1,7 @@
 import "./index-test";
 import "./models/user.spec";
 import "./models/profile.spec";
+import "./models/account.spec";
 import "./models/credit.spec";
 import "./models/debit.spec";
 import "./controllers/user-sign-up.test";

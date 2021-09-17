@@ -17,7 +17,7 @@ describe("src/models/debit", () => {
 
   checkModelName(Debit)("Debits");
   context("properties", () => {
-    ["userId", "amount", "transactionType", "receiverName", "receiverAccount"].forEach(
+    ["userId", "amount", "transactionType", "receiverName", "receiverEmail"].forEach(
       checkPropertyExists(debit),
     );
   });

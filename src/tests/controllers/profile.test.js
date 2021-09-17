@@ -31,9 +31,8 @@ describe("Update user profile", () => {
       .set("Accept", "application/json")
       .send(profile)
       .end((err, res) => {
-        console.log(res);
         expect(res).to.have.status(200);
-        expect(res.body.message).to.equal("User profile updated.");
+        expect(res.body.message).to.equal("User profile updated successfully.");
         done();
       });
   });

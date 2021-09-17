@@ -3,7 +3,7 @@ import chaiHttp from "chai-http";
 import db from "../../models/index";
 import { user4 } from "./user-sign-in-test-data";
 import {
-  debit, debit2, debit3, debit4, debit5
+  debit, debit2, debit3, debit4, debit5, account, account1, account2, accountDetails, accountDetails1, accountDetails2
 } from "./debit-data";
 import server from "../../app";
 
@@ -26,7 +26,7 @@ describe("Add debit Transaction", () => {
         done();
       });
   });
-  it("should allow user with token add a debit", done => {
+  it("should allow user with token send money", done => {
     chai
       .request(server)
       .post("/api/v1/auth/debit")
@@ -35,6 +35,7 @@ describe("Add debit Transaction", () => {
       .send(debit)
       .end((err, res) => {
         expect(res).to.have.status(201);
+        expect(res.body.message).to.equal("Amount has been sent successfully.");
         done();
       });
   });
@@ -55,6 +56,108 @@ describe("Add debit Transaction", () => {
       .request(server)
       .post("/api/v1/auth/debit")
       .send(debit3)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+});
+
+describe("Add beneficiary account", () => {
+  let userToken;
+  before(done => {
+    chai
+      .request(server)
+      .post("/api/v1/users/signin")
+      .set("Accept", "application/json")
+      .send(user4)
+      .end((err, res) => {
+        if (err) throw err;
+        userToken = res.body.data;
+        done();
+      });
+  });
+  it("should allow user add his beneficiary account", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/add-beneficiary")
+      .set("Authorization", `Bearer ${userToken}`)
+      .set("Accept", "application/json")
+      .send(account)
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.body.message).to.equal("Successfully added Account. Please note only account with registered name would be credited.");
+        done();
+      });
+  });
+  it("should not allow user add his beneficiary account with incomplete details", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/add-beneficiary")
+      .set("Authorization", `Bearer ${userToken}`)
+      .set("Accept", "application/json")
+      .send(account1)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+  it("should not allow user without token add his beneficiary account", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/add-beneficiary")
+      .send(account2)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+});
+
+describe("Make Withdrawal", () => {
+  let userToken;
+  before(done => {
+    chai
+      .request(server)
+      .post("/api/v1/users/signin")
+      .set("Accept", "application/json")
+      .send(user4)
+      .end((err, res) => {
+        if (err) throw err;
+        userToken = res.body.data;
+        done();
+      });
+  });
+  it("should allow user make withdrawal with complete details", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/withdrawal")
+      .set("Authorization", `Bearer ${userToken}`)
+      .set("Accept", "application/json")
+      .send(accountDetails)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equal("Withdrawal in progress, you will be credited once the transaction is approved.");
+        done();
+      });
+  });
+  it("should not allow user make withdrawal with incomplete details", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/withdrawal")
+      .set("Authorization", `Bearer ${userToken}`)
+      .set("Accept", "application/json")
+      .send(accountDetails1)
+      .end((err, res) => {
+        expect(res).to.have.status(422);
+        done();
+      });
+  });
+  it("should not allow user without token add his beneficiary account", done => {
+    chai
+      .request(server)
+      .post("/api/v1/auth/add-beneficiary")
+      .send(accountDetails2)
       .end((err, res) => {
         expect(res).to.have.status(401);
         done();
@@ -162,7 +265,7 @@ describe("GET Debit Transactions api route", () => {
           expect(debits).to.have.property("id");
           expect(debits).to.have.property("userId");
           expect(debits).to.have.property("amount");
-          expect(debits).to.have.property("receiverAccount");
+          expect(debits).to.have.property("receiverEmail");
           expect(debits).to.have.property("receiverName");
           expect(debits).to.have.property("transactionType");
         });
@@ -188,7 +291,7 @@ describe("GET Debit Transactions api route", () => {
         expect(data).to.have.property("id");
         expect(data).to.have.property("userId");
         expect(data).to.have.property("amount");
-        expect(data).to.have.property("receiverAccount");
+        expect(data).to.have.property("receiverEmail");
         expect(data).to.have.property("receiverName");
         expect(data).to.have.property("transactionType");
 

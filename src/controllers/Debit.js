@@ -1,5 +1,5 @@
 import Admin from "../services/debit";
-import { validation, validateId } from "../validations/debitValidation";
+import { validation, validateId, accountValidation } from "../validations/debitValidation";
 
 const {
   sendTransaction, getAllDebitsTransaction, findUser, findAccount,
@@ -132,8 +132,12 @@ export default class AdminDebitController {
     try {
       const { id } = req.user;
       const { accountNo, accountName, bankName } = req.body;
+      const { error } = accountValidation(req.body);
+      if (error) {
+        return res.status(400).json({ status: 400, error: error.message });
+      }
       const accountExist = await findAccount(accountNo);
-      if (accountExist) return res.status(400)({ status: 400, error: "Account number already exists" });
+      if (accountExist) return res.status(409).json({ status: 409, error: "Account number already exists" });
       const accountDetails = {
         userId: id, accountNo, accountName, bankName
       };

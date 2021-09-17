@@ -25,7 +25,7 @@ export default class AdminCreditController {
 
       const user = await userExist(id);
       const userProfile = await profileExist(id);
-      if (!user) return res.status(400).json({ status: 404, message: "user does not exist" });
+      if (!user) return res.status(400).json({ status: 400, message: "user does not exist" });
 
       const randomChars = Math.random().toString(32).substr(8);
 

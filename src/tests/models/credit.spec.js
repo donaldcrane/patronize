@@ -17,7 +17,7 @@ describe("src/models/credit", () => {
 
   checkModelName(Credit)("Credits");
   context("properties", () => {
-    ["userId", "amount", "transactionType", "senderName"].forEach(
+    ["userId", "amount", "transactionType", "senderName", "reference", "status"].forEach(
       checkPropertyExists(credit),
     );
   });

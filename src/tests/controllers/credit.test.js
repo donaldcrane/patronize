@@ -26,34 +26,34 @@ describe("Add credit", () => {
         done();
       });
   });
-  it("should allow user with token add a credit", done => {
+  it("should allow user with token add money to his account", done => {
     chai
       .request(server)
-      .post("/api/v1/auth/credit")
+      .post("/api/v1/auth/paystack/initialize")
       .set("Authorization", `Bearer ${userToken}`)
       .set("Accept", "application/json")
       .send(credit)
       .end((err, res) => {
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(200);
         done();
       });
   });
-  it("should not allow user add a credit with incomplete details", done => {
+  it("should not allow user add money to his account with incomplete details", done => {
     chai
       .request(server)
-      .post("/api/v1/auth/credit")
+      .post("/api/v1/auth/paystack/initialize")
       .set("Authorization", `Bearer ${userToken}`)
       .set("Accept", "application/json")
       .send(credit2)
       .end((err, res) => {
-        expect(res).to.have.status(400);
+        expect(res).to.have.status(422);
         done();
       });
   });
-  it("should not allow user without token add a credit ", done => {
+  it("should not allow user without token add money to his account", done => {
     chai
       .request(server)
-      .post("/api/v1/auth/credit")
+      .post("/api/v1/auth/paystack/initialize")
       .send(credit3)
       .end((err, res) => {
         expect(res).to.have.status(401);
@@ -164,6 +164,8 @@ describe("GET credit api route", () => {
           expect(credits).to.have.property("amount");
           expect(credits).to.have.property("transactionType");
           expect(credits).to.have.property("senderName");
+          expect(credits).to.have.property("reference");
+          expect(credits).to.have.property("status");
         });
 
         expect(data).to.have.length(2);
@@ -189,6 +191,8 @@ describe("GET credit api route", () => {
         expect(data).to.have.property("amount");
         expect(data).to.have.property("transactionType");
         expect(data).to.have.property("senderName");
+        expect(data).to.have.property("reference");
+        expect(data).to.have.property("status");
 
         expect(data).to.be.an("object");
         done();

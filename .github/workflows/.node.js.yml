@@ -34,15 +34,15 @@ jobs:
       run: |
         npm install
         npm run lint
-        
+        npm run coverage
       env:
         CI: true
-        # NODE_ENV: test
-        # JWT_KEY: ${{ secrets.JWT_KEY }}
-        # COOKIE_KEY: ${{ secrets.COOKIE_KEY }}   
-    # - name: Coveralls
-    #   uses: coverallsapp/github-action@master
-    #   env:
-    #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-    #     with:
-    #       github-token: ${{ secrets.GITHUB_TOKEN }} # npm run coverage
+        NODE_ENV: test
+        JWT_KEY: ${{ secrets.JWT_KEY }}
+        COOKIE_KEY: ${{ secrets.COOKIE_KEY }}   
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }} 

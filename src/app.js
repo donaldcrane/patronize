@@ -19,8 +19,13 @@ app.use(cookieSession({
 app.use("/api/v1", router);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to  Sendme app");
+  res.send("Welcome to  Patronize app");
 });
+
+app.all("*", (req, res) => res
+  .status(404)
+  .json({ message: "Url does not exist.", data: null }));
+
 // logout
 app.get("/logout", (req, res) => {
   req.logOut();

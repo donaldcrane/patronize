@@ -77,6 +77,7 @@ describe("Should test all users", async () => {
             expect(users).to.have.property("username");
             expect(users).to.have.property("email");
             expect(users).to.have.property("password");
+            expect(users).to.have.property("globalBalance");
           });
 
           expect(data).to.be.an("array");
