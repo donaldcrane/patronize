@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     reference: {
       type: DataTypes.STRING,
-      allowNull: false,
     }, 
     status: {
       type: DataTypes.ENUM("pending", "failed", "completed", "refunded", "settled", "success", "cancelled", "conflict"),

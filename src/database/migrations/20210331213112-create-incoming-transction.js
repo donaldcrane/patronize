@@ -31,8 +31,7 @@ module.exports = {
         defaultValue: "pending",
       },
       reference: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

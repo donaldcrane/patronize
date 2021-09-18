@@ -4,7 +4,7 @@
 
 # Patronize
 
-Patronize is a platform where users can sign up with their basic information,send and add money to their account
+Patronize is a platform where users can sign up with their basic information, add money to their account and also send money to other users on the platform throught their regisered email
 
 # Documentation
 

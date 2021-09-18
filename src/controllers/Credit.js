@@ -4,7 +4,7 @@ import Payment from "../middlewares/paystack";
 import { validation, validateId } from "../validations/creditValidation";
 
 const {
-  addTransaction, getAllIncomingTransaction, userExist, profileExist,
+  addTransaction, getAllIncomingTransaction, userExist, profileExist, updateTransactionRef,
   getTransactionById, deleteTransaction, updateGlobalBalance, updateTransactionStatus
 } = Admin;
 const { initializePayment, verifyPayment } = Payment;
@@ -27,15 +27,10 @@ export default class AdminCreditController {
       const userProfile = await profileExist(id);
       if (!user) return res.status(400).json({ status: 400, message: "user does not exist" });
 
-      const randomChars = Math.random().toString(32).substr(8);
-
-      const createReference = `Web _Purchase_${randomChars}}`.toUpperCase();
-
       const transactionDetails = {
         amount,
         senderName: `${userProfile.firstName}, ${userProfile.lastName}`,
         userId: id,
-        reference: createReference
       };
 
       const transaction = await addTransaction(transactionDetails);
@@ -53,7 +48,7 @@ export default class AdminCreditController {
 
       return res.status(200).json({ status: 200, message: "Transaction Created", data: paymentDetails });
     } catch (error) {
-      return res.status(500).json({ status: 500, error: "Server error." });
+      return res.status(500).json({ status: 500, error: error.message });
     }
   }
 
@@ -76,6 +71,8 @@ export default class AdminCreditController {
           message: "Transaction record not found, please contact support"
         });
       }
+      await updateTransactionRef(data.metadata.transactionId, data.reference);
+
       if (transaction.status !== "pending" && transaction.status !== "failed") {
         return res.status(400).json({ status: 400, message: "Transaction already settled" });
       }
@@ -163,14 +160,12 @@ export default class AdminCreditController {
 
   static async paystackWebhook(req, res) {
     try {
-      const { data } = req.body.data;
-      console.log("this is me", req.body);
-      const transaction = await getTransactionById(data.reference);
-      console.log(transaction);
+      const { data } = req.body;
+      if (data.status === "success" && data.gateway_response === "Successful") return res.status(200).json({ status: 200, message: "Transaction was Successful" });
 
       return res.status(200).json({
         status: 200,
-        message: "transactions completed!",
+        message: "Transaction was not Successful"
       });
     } catch (error) {
       return res.status(500).json({ ststus: 500, error: error.message });

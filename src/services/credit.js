@@ -96,6 +96,23 @@ export default class Admin {
   }
 
   /**
+   * @param {string} id - The user id
+   * @param {string} ref - The transaction reference
+   * @returns {object} - An instance of the Profile model class
+   */
+  static async updateTransactionRef(id, ref) {
+    try {
+      return await database.Credits.update({ reference: ref }, {
+        where: { id },
+        returning: true,
+        plain: true
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * @param {string} id - The transaction name
    * @returns {object} An instance of the Transactions model class
    */
