@@ -10,17 +10,11 @@ module.exports = {
     dialect: process.env.DIALECT,
   },
   test: {
-    username: process.env.USERN,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.HOST,
+    url: TEST_DATABASE_URL,
     dialect: process.env.DIALECT,
   },
   production: {
-    username: process.env.USERN,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.HOST,
+    url: PROD_DATABASE_URL,
     dialect: process.env.DIALECT,
   },
 };
